@@ -208,13 +208,6 @@ A dark, "intelligence platform" style web page to browse the events:
 Colours and the dark theme are set in `.streamlit/config.toml` and at the top
 of `dashboard/app.py`.
 
-**The map background** is drawn from `dashboard/africa_map.geojson` (country
-outlines from Natural Earth, public domain), not from online map tiles.
-Morocco is drawn with its Sahara territory as one country, as on Moroccan
-official maps, and `config/places.yaml` counts places there (Laayoune, Smara,
-Dakhla...) as Morocco. To change the outlines, edit and run
-`tools/build_map.py` (instructions at the top of that file).
-
 It only *reads* the official database `data/monitor.db` - it never changes it.
 
 ### Run it on your computer

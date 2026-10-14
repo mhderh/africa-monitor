@@ -11,9 +11,7 @@ database (data/monitor.db) and never changes it. Run `git pull` first to get
 the latest data from GitHub.
 """
 
-import json
 import sqlite3
-import unicodedata
 from datetime import date, timedelta
 from html import escape
 from pathlib import Path
@@ -24,9 +22,6 @@ import pydeck as pdk
 import streamlit as st
 
 DB_FILE = Path(__file__).resolve().parent.parent / "data" / "monitor.db"
-# Country outlines drawn as the map background (built by tools/build_map.py).
-# Morocco is drawn with its Sahara territory, as on Moroccan official maps.
-MAP_FILE = Path(__file__).resolve().parent / "africa_map.geojson"
 
 # ---------------------------------------------------------------------------
 # Colours (all chosen for the dark background)
@@ -126,9 +121,6 @@ div[data-testid="stVerticalBlockBorderWrapper"] {{ background: {PANEL}; border-c
 .flash-meta {{ color:{INK_2}; font-size:.74rem; margin-top:5px; }}
 .flash a {{ color:#86b6ef; font-size:.74rem; text-decoration:none; }}
 
-/* Map: sea colour behind our own country shapes */
-div[data-testid="stDeckGlJsonChart"] {{ background: #0a1220; border-radius: 10px; overflow: hidden; }}
-
 /* Map legend */
 .legend {{ display:flex; flex-wrap:wrap; gap:14px; font-size:.74rem; color:{INK_2}; margin-top:8px; }}
 .legend i {{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px;
@@ -166,34 +158,6 @@ def load_events(file_changed_at):
     for column in ("killed", "injured", "kidnapped"):
         events[column] = pd.to_numeric(events[column]).astype("Int64")
     return events
-
-
-@st.cache_data
-def load_map():
-    """Country shapes + label positions for the map background."""
-    shapes = json.loads(MAP_FILE.read_text(encoding="utf-8"))
-    for feature in shapes["features"]:
-        # African countries a little lighter than their neighbours.
-        feature["properties"]["fill"] = [24, 35, 56] if feature["properties"]["africa"] else [17, 26, 42]
-    # The map's text layer only draws plain letters, so "Côte" becomes "COTE".
-    labels = [{"name": unicodedata.normalize("NFKD", f["properties"]["name"].upper())
-                       .encode("ascii", "ignore").decode(),
-               "position": [f["properties"]["label_x"], f["properties"]["label_y"]]}
-              for f in shapes["features"] if f["properties"]["africa"]]
-    return shapes, labels
-
-
-def base_layers():
-    """Our own map background: land, borders and country names."""
-    shapes, labels = load_map()
-    return [
-        pdk.Layer("GeoJsonLayer", data=shapes, stroked=True, filled=True,
-                  get_fill_color="properties.fill",
-                  get_line_color=[70, 88, 118], line_width_min_pixels=0.8, pickable=False),
-        pdk.Layer("TextLayer", data=labels, get_position="position", get_text="name",
-                  get_size=10, get_color=[140, 150, 165, 210], font_weight=600,
-                  pickable=False),
-    ]
 
 
 def spread_country_points(events):
@@ -362,14 +326,12 @@ def threat_map(events):
         }
 
     deck = pdk.Deck(
-        layers=base_layers() + layers,
-        # Centred so the whole continent fits, from Tangier to Cape Town.
-        initial_view_state=pdk.ViewState(latitude=7, longitude=15, zoom=2.25),
+        layers=layers,
+        initial_view_state=pdk.ViewState(latitude=5, longitude=17, zoom=2.6),
         # Mouse wheel scrolls the page, not the map (use +/- or double-click to zoom).
         views=[pdk.View(type="MapView", controller={"scrollZoom": False, "doubleClickZoom": True})],
-        # No map tiles: the countries are drawn by base_layers() above.
-        map_provider=None,
-        map_style=None,
+        map_provider="carto",
+        map_style="dark",
         tooltip=tooltip,
     )
     st.pydeck_chart(deck, use_container_width=True, height=440)
