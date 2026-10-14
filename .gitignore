@@ -1,0 +1,17 @@
+# Secrets - NEVER commit this file
+.env
+
+# Your local test database (the official one, data/monitor.db, IS committed)
+data/local.db
+
+# Python virtual environment and caches
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Editor / OS clutter
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,91 @@
+# ---------------------------------------------------------------------------
+# GitHub Actions: runs the monitor every day on GitHub's computers, so it
+# works even when your computer is off.
+#
+#   - Automatic: every day at 07:00 UTC = 08:00 in Casablanca
+#     (07:00 Casablanca during Ramadan, when Morocco switches to UTC+0).
+#     GitHub sometimes starts scheduled runs 5-30 minutes late.
+#   - Manual: GitHub -> your repo -> "Actions" tab -> "Daily monitor"
+#     -> "Run workflow" (you can tick "dry run" to send nothing).
+#
+# Secrets (bot token, chat ID...) come from:
+#   repo -> Settings -> Secrets and variables -> Actions
+# ---------------------------------------------------------------------------
+
+name: Daily monitor
+
+on:
+  schedule:
+    - cron: "0 7 * * *"          # minute hour day month weekday (UTC)
+  workflow_dispatch:              # adds the "Run workflow" button
+    inputs:
+      dry_run:
+        description: "Dry run (print the messages in the log, send nothing)"
+        type: boolean
+        default: false
+
+# Allows the job to save the updated database back into the repository.
+permissions:
+  contents: write
+
+# Never run two copies at the same time (they would both edit the database).
+concurrency:
+  group: daily-monitor
+  cancel-in-progress: false
+
+jobs:
+  run-monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Get the code and database
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install packages
+        run: pip install -r requirements.txt
+
+      - name: Run automatic tests
+        run: python -m pytest -q
+
+      - name: Run the monitor
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RELIEFWEB_APPNAME: ${{ secrets.RELIEFWEB_APPNAME }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python -m monitor.main --dry-run
+          else
+            python -m monitor.main
+          fi
+
+      - name: Save the updated database
+        # Runs even if the monitor step failed, so nothing fetched is lost.
+        if: always() && inputs.dry_run != true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/monitor.db
+          if git diff --cached --quiet; then
+            echo "Database unchanged - nothing to save."
+          else
+            git commit -m "Update database $(date -u +%Y-%m-%d)"
+            git pull --rebase
+            git push
+          fi
+
+      - name: Tell me on Telegram if something failed
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python -c "import os; from monitor import telegram; telegram.send_message('⚠️ The daily monitor run failed. Details: ' + os.environ['RUN_URL'])"

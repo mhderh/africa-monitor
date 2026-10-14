@@ -1,0 +1,5 @@
+# Normalise line endings so Windows and GitHub's Linux machines agree.
+* text=auto
+
+# The database is a binary file - never try to merge or change it.
+*.db binary

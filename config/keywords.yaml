@@ -1,0 +1,149 @@
+# ---------------------------------------------------------------------------
+# KEYWORDS - used by the keyword filter and the rule-based classifier
+# ---------------------------------------------------------------------------
+# How matching works (you don't need to worry about upper/lower case or
+# accents - "Attaque", "attaque" and "attaqué" are all treated the same):
+#
+#   kidnap     matches the whole word "kidnap" only
+#   kidnap*    a star at the end matches anything starting with "kidnap":
+#              kidnap, kidnapped, kidnapping, kidnappers ...
+#   "armed men"   phrases are fine (use quotes if they contain : or ')
+#
+# Arabic words also match with common prefixes attached
+# (و / ال / ب / ل ...), e.g. هجوم matches الهجوم and وهجوم.
+#
+# After editing, re-check old articles with:
+#     python -m monitor.main --reprocess
+# ---------------------------------------------------------------------------
+
+# An article is RELEVANT if it names an African country or city
+# (see places.yaml) AND either:
+#   - contains a STRONG keyword (clearly about armed violence), or
+#   - contains a WEAK keyword (words like "attack" that are also used for
+#     politics or sport) PLUS a second sign: another weak keyword, a
+#     CONTEXT word (killed, soldiers, army...) or a known group name.
+violence_keywords:
+  strong:
+    en: [terror*, militant*, jihad*, insurgen*, gunmen, gunman, "armed men",
+         "armed group*", bandit*, extremis*, kidnap*, abduct*, hostage*,
+         ambush*, bomb, bombs, bombing*, bomber*, bombed, "explosive device*",
+         IED, IEDs, massacre*, behead*, landmine*, "land mine*", airstrike*,
+         "air strike*", "drone strike*", "military operation*",
+         counterterror*, "counter terror*"]
+    fr: [terroris*, djihad*, jihad*, "hommes armes", "groupe arme*",
+         "groupes armes", enlevement*, enleves, enlevees, otage*, embuscade*,
+         kamikaze*, attentat*, "engin explosif*", "engins explosifs",
+         insurge*, extremis*, "operation militaire", "operations militaires",
+         "frappe aerienne", "frappes aeriennes", massacre*, "bandits armes"]
+    ar: [إرهاب*, اختطاف, خطف, مختطف*, رهائن, رهينة, كمين, انتحاري*,
+         "عبوة ناسفة", جهادي*, متطرف*, "غارة جوية", "عملية عسكرية", مجزرة,
+         مسلحين, مسلحون]
+  weak:
+    en: [attack*, explosion*, rebel*, fighting, clash*, raid*]
+    fr: [attaque*, explosion*, rebelle*, rebellion*, combats, affrontement*]
+    ar: [هجوم, هجمات, هجوما, مسلح*, تفجير*, انفجار, غارات, اشتباك*, معارك]
+
+# Words that confirm a WEAK keyword is about real violence.
+violence_context: [killed, kill*, dead, died, death*, wounded, injured,
+                   soldier*, troops, army, military, civilians, villagers,
+                   police, fighters, militia*, armed, war,
+                   tues, tue, morts, blesses, soldats, armee, militaires,
+                   civils, policiers, guerre,
+                   قتلى, قتيل*, مقتل, جرحى, جنود, الجيش, مدنيين, الشرطة, الحرب]
+
+# If one of these is present, deaths are counted as "reported" even when no
+# number is given (e.g. "driver killed in attack") - used for severity.
+# ("mort" alone is left out: "condamné à mort" means "sentenced to death")
+death_words: [killed, dead, died, tues, tuees, tue, morts, قتلى, قتيل*, مقتل]
+
+# Rescued / freed people are not new kidnap victims.
+rescue_words: [rescu*, freed, released, liber*, تحرير, الافراج]
+
+# Articles containing any of these are thrown away even if they match above.
+exclude_phrases: ["heart attack", "panic attack", "asthma attack",
+                  "shark attack", cyberattack*, "cyber attack*",
+                  "crise cardiaque", "attaque cardiaque", cyberattaque*]
+
+# Articles whose link contains any of these are thrown away (sport pages
+# talk a lot about "attacks" and "attackers").
+exclude_url_parts: ["/sport/", "/sports/", "/football/", "/culture/"]
+
+# EVENT TYPES - checked in this order; the first one that matches wins.
+# Anything relevant that matches none of them becomes "other".
+event_types:
+  kidnapping: [kidnap*, abduct*, hostage*, enlevement*, enleve*, otage*,
+               اختطاف, خطف, مختطف*, رهائن, رهينة]
+  attack: [attack*, ambush*, bomb, bombs, bombing*, bomber*, bombed,
+           explosion*, IED, IEDs, gunmen, gunman, "armed men", massacre*,
+           "suicide bomb*", stormed, raided, attaque*, attentat*, embuscade*,
+           kamikaze*, "hommes armes", هجوم, هجمات, هجوما, كمين, تفجير*,
+           انفجار, انتحاري*, مجزرة]
+  military operation: [airstrike*, "air strike*", "drone strike*",
+                       "military operation*", offensive, counterterror*,
+                       "counter terror*", neutralis*, neutraliz*,
+                       "frappe aerienne", "frappes aeriennes",
+                       "operation militaire", "operations militaires",
+                       "غارة جوية", غارات, "عملية عسكرية"]
+  arrest: [arrest*, detained, "taken into custody", sentenced, convicted,
+           extradit*, arrete*, interpelle*, condamne*, اعتقال, القبض, توقيف]
+  threat: [threat*, warn*, "security alert", "travel advisory", menace*,
+           alerte, تهديد*, تحذير*]
+
+# Words that push severity up to at least 4 (very serious attack types).
+severe_terms: ["suicide bomb*", "car bomb*", kamikaze*, massacre*,
+               "voiture piegee", انتحاري*, "سيارة مفخخة", مجزرة]
+
+# ---------------------------------------------------------------------------
+# GROUPS - armed / extremist groups we try to recognise by name
+# ---------------------------------------------------------------------------
+#   name           how the group is shown in Telegram and the dashboard
+#   aliases        the different ways news articles write the name
+#   only_countries (optional) only count this match in these countries
+#   not_countries  (optional) never count this match in these countries
+#   generic: true  (optional) dropped if a more specific group also matched
+# ---------------------------------------------------------------------------
+groups:
+  - name: JNIM (al-Qaeda Sahel)
+    aliases: [JNIM, "Jama'at Nusrat al-Islam wal-Muslimin", "Jamaat Nusrat al Islam*",
+              GSIM, "Groupe de soutien a l'islam et aux musulmans",
+              "جماعة نصرة الإسلام والمسلمين", "نصرة الإسلام والمسلمين"]
+  - name: Islamic State Sahel
+    aliases: ["Islamic State Sahel", "IS Sahel", ISSP, "Islamic State in the Greater Sahara",
+              ISGS, EIGS, "Etat islamique au Grand Sahara", "Etat islamique au Sahel",
+              "ولاية الساحل"]
+  - name: ISWAP
+    aliases: [ISWAP, "Islamic State West Africa*", "Islamic State's West Africa*",
+              "Etat islamique en Afrique de l'Ouest", "ولاية غرب أفريقيا"]
+  - name: Boko Haram
+    aliases: ["Boko Haram", "بوكو حرام"]
+  - name: Ansaroul Islam
+    aliases: ["Ansaroul Islam", "Ansarul Islam"]
+  - name: Lakurawa
+    aliases: [Lakurawa]
+  - name: al-Shabaab
+    aliases: [al-Shabaab, al-Shabab, Shabaab, Shabab, Chebab, Shebab, "حركة الشباب"]
+    not_countries: [Mozambique]
+  - name: Islamic State Mozambique
+    aliases: ["Islamic State Mozambique", "IS Mozambique", "Ansar al-Sunna",
+              "Ahlu Sunnah Wal Jamaah", ASWJ, al-Shabaab, al-Shabab, Shabaab, Shabab]
+    only_countries: [Mozambique]
+  - name: Islamic State Somalia
+    aliases: ["Islamic State Somalia", "Islamic State in Somalia", "IS Somalia",
+              "داعش الصومال"]
+  - name: ADF / IS Central Africa
+    aliases: [ADF, "Allied Democratic Forces", ISCAP, "Islamic State Central Africa*"]
+  - name: AQIM
+    aliases: [AQIM, AQMI, "al-Qaeda in the Islamic Maghreb", "Al-Qaida au Maghreb islamique",
+              "القاعدة في بلاد المغرب الإسلامي"]
+  - name: M23
+    aliases: [M23, "AFC/M23"]
+  - name: CODECO
+    aliases: [CODECO]
+  - name: Rapid Support Forces
+    aliases: ["Rapid Support Forces", "Forces de soutien rapide", "قوات الدعم السريع"]
+  - name: Islamic State (unspecified)
+    aliases: ["Islamic State", ISIS, ISIL, Daesh, Daech, "Etat islamique", داعش, "تنظيم الدولة"]
+    generic: true
+  - name: al-Qaeda (unspecified)
+    aliases: [al-Qaeda, al-Qaida, "Al-Qaïda", "تنظيم القاعدة"]
+    generic: true

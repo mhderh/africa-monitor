@@ -1,0 +1,27 @@
+# ---------------------------------------------------------------------------
+# OPTIONS - settings you may want to tweak
+# ---------------------------------------------------------------------------
+
+digest:
+  # Only include events published in the last N days in the digest
+  # (stops old stories that feeds keep for weeks from filling it).
+  max_age_days: 2
+  # Events below this severity aren't listed one by one - each region just
+  # gets a line like "+ 6 lower-severity items" (they stay in the database
+  # and the dashboard). Set to 1 to list everything.
+  list_min_severity: 2
+
+alerts:
+  # Events at or above this severity get their own alert message.
+  min_severity: 4
+  # Safety limit: at most this many alert messages per run. Extra
+  # high-severity events still appear in the digest.
+  max_per_run: 10
+
+deduplication:
+  # Two events are treated as the same incident if they are in the same
+  # country, have the same event type, are at most this many days apart ...
+  max_days_apart: 1
+  # ... and either name the same city, report the same death toll, or have
+  # headlines at least this similar (0 = nothing in common, 1 = identical).
+  title_similarity: 0.5

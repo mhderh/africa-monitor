@@ -1,0 +1,326 @@
+# ---------------------------------------------------------------------------
+# PLACES - African countries and hotspot cities we can recognise in articles
+# ---------------------------------------------------------------------------
+# Countries:
+#   region   which region it belongs to in the digest and dashboard
+#   lat/lon  approximate centre of the country (used on the map when no
+#            city is named)
+#   aliases  how articles write it (English, French, Arabic, adjectives).
+#            Same matching rules as keywords.yaml: a star at the end matches
+#            longer words ("Nigeria*" matches Nigerian, Nigerians).
+#
+# Cities / provinces: name, country (must match a country name below),
+# lat/lon, aliases.
+#
+# Longer names are checked first, so "South Sudan" is never read as "Sudan"
+# and "Niger Delta" is never read as "Niger".
+# Coordinates are approximate - fine for a map, not for navigation.
+# ---------------------------------------------------------------------------
+
+countries:
+  # --- Sahel ---
+  Mali:
+    region: Sahel
+    lat: 17.57
+    lon: -3.99
+    aliases: [Mali, Malian*, Malien*, مالي]
+  Burkina Faso:
+    region: Sahel
+    lat: 12.24
+    lon: -1.56
+    aliases: ["Burkina Faso", Burkina, Burkinabe*, بوركينا]
+  Niger:
+    region: Sahel
+    lat: 17.61
+    lon: 8.08
+    aliases: [Niger, Nigerien*, النيجر]
+  Mauritania:
+    region: Sahel
+    lat: 21.0
+    lon: -10.9
+    aliases: [Mauritania*, Mauritanie, Mauritanien*, موريتانيا]
+
+  # --- Lake Chad Basin ---
+  Nigeria:
+    region: Lake Chad Basin
+    lat: 9.08
+    lon: 8.68
+    aliases: [Nigeria*, "Niger Delta", "Benin City", نيجيريا]
+  Chad:
+    region: Lake Chad Basin
+    lat: 15.45
+    lon: 18.73
+    aliases: [Chad, Chadian*, Tchad, Tchadien*, تشاد]
+  Cameroon:
+    region: Lake Chad Basin
+    lat: 7.37
+    lon: 12.35
+    aliases: [Cameroon*, Cameroun, Camerounais*, الكاميرون]
+
+  # --- Horn of Africa ---
+  Somalia:
+    region: Horn of Africa
+    lat: 5.15
+    lon: 46.2
+    aliases: [Somali*, Somalie*, الصومال]
+  Kenya:
+    region: Horn of Africa
+    lat: 0.02
+    lon: 37.91
+    aliases: [Kenya*, كينيا]
+  Ethiopia:
+    region: Horn of Africa
+    lat: 9.15
+    lon: 40.49
+    aliases: [Ethiopia*, Ethiopie*, إثيوبيا]
+  Djibouti:
+    region: Horn of Africa
+    lat: 11.83
+    lon: 42.59
+    aliases: [Djibouti*, جيبوتي]
+  Eritrea:
+    region: Horn of Africa
+    lat: 15.18
+    lon: 39.78
+    aliases: [Eritrea*, Erythree*, إريتريا]
+  Sudan:
+    region: Horn of Africa
+    lat: 12.86
+    lon: 30.22
+    aliases: [Sudan, Sudanese, Soudan, Soudanais*, السودان]
+  South Sudan:
+    region: Horn of Africa
+    lat: 6.88
+    lon: 31.31
+    aliases: ["South Sudan*", "Soudan du Sud", "جنوب السودان"]
+
+  # --- Mozambique & Southern Africa ---
+  Mozambique:
+    region: Mozambique & Southern Africa
+    lat: -18.67
+    lon: 35.53
+    aliases: [Mozambique, Mozambican*, Mozambicain*, موزمبيق]
+  Tanzania:
+    region: Mozambique & Southern Africa
+    lat: -6.37
+    lon: 34.89
+    aliases: [Tanzania*, Tanzanie*, تنزانيا]
+  South Africa:
+    region: Mozambique & Southern Africa
+    lat: -30.56
+    lon: 22.94
+    aliases: ["South Africa*", "Afrique du Sud", "جنوب أفريقيا", "جنوب إفريقيا"]
+
+  # --- North Africa ---
+  Morocco:
+    region: North Africa
+    lat: 31.79
+    lon: -7.09
+    aliases: [Morocc*, Maroc*, المغرب]
+  Algeria:
+    region: North Africa
+    lat: 28.03
+    lon: 1.66
+    aliases: [Algeria*, Algerie*, Algerien*, الجزائر]
+  Tunisia:
+    region: North Africa
+    lat: 33.89
+    lon: 9.54
+    aliases: [Tunisia*, Tunisie*, Tunisien*, تونس]
+  Libya:
+    region: North Africa
+    lat: 26.34
+    lon: 17.23
+    aliases: [Libya*, Libye*, Libyen*, ليبيا]
+  Egypt:
+    region: North Africa
+    lat: 26.82
+    lon: 30.8
+    aliases: [Egypt*, Egypte*, Egyptien*, مصر]
+
+  # --- Central Africa / Great Lakes ---
+  DR Congo:
+    region: Central Africa & Great Lakes
+    lat: -4.04
+    lon: 21.76
+    aliases: ["DR Congo", DRC, "Democratic Republic of Congo", "Democratic Republic of the Congo",
+              RDC, "Republique democratique du Congo", Congo, Congolese, Congolais*, الكونغو]
+  Republic of Congo:
+    region: Central Africa & Great Lakes
+    lat: -0.23
+    lon: 15.83
+    aliases: ["Republic of Congo", "Republic of the Congo", Congo-Brazzaville]
+  Central African Republic:
+    region: Central Africa & Great Lakes
+    lat: 6.61
+    lon: 20.94
+    # (not "CAR" - it would match "car bomb")
+    aliases: ["Central African Republic", Centrafrique, Centrafricain*,
+              "Republique centrafricaine", "أفريقيا الوسطى"]
+  Uganda:
+    region: Central Africa & Great Lakes
+    lat: 1.37
+    lon: 32.29
+    aliases: [Uganda*, Ouganda*, أوغندا]
+  Rwanda:
+    region: Central Africa & Great Lakes
+    lat: -1.94
+    lon: 29.87
+    aliases: [Rwanda*, رواندا]
+  Burundi:
+    region: Central Africa & Great Lakes
+    lat: -3.37
+    lon: 29.92
+    aliases: [Burundi*, بوروندي]
+  Equatorial Guinea:
+    region: Central Africa & Great Lakes
+    lat: 1.65
+    lon: 10.27
+    aliases: ["Equatorial Guinea", "Guinee equatoriale"]
+
+  # --- Coastal West Africa ---
+  Benin:
+    region: Coastal West Africa
+    lat: 9.31
+    lon: 2.32
+    aliases: [Benin, Beninese, Beninois*, بنين]
+  Togo:
+    region: Coastal West Africa
+    lat: 8.62
+    lon: 0.82
+    aliases: [Togo, Togolese, Togolais*, توغو]
+  Ghana:
+    region: Coastal West Africa
+    lat: 7.95
+    lon: -1.02
+    aliases: [Ghana*, غانا]
+  Ivory Coast:
+    region: Coastal West Africa
+    lat: 7.54
+    lon: -5.55
+    aliases: ["Ivory Coast", "Cote d'Ivoire", Ivorian*, Ivoirien*, "ساحل العاج"]
+  Senegal:
+    region: Coastal West Africa
+    lat: 14.5
+    lon: -14.45
+    aliases: [Senegal*, السنغال]
+  Guinea:
+    region: Coastal West Africa
+    lat: 9.95
+    lon: -9.7
+    aliases: [Guinea, Guinean*, Guinee, Guineen*, غينيا]
+  Guinea-Bissau:
+    region: Coastal West Africa
+    lat: 11.8
+    lon: -15.18
+    aliases: [Guinea-Bissau, Guinee-Bissau, "غينيا بيساو"]
+  Sierra Leone:
+    region: Coastal West Africa
+    lat: 8.46
+    lon: -11.78
+    aliases: ["Sierra Leone*"]
+  Liberia:
+    region: Coastal West Africa
+    lat: 6.43
+    lon: -9.43
+    aliases: [Liberia*, ليبيريا]
+  Gambia:
+    region: Coastal West Africa
+    lat: 13.44
+    lon: -15.31
+    aliases: [Gambia*, Gambie*]
+
+cities:
+  # Mali
+  - {name: Bamako, country: Mali, lat: 12.64, lon: -8.0, aliases: [Bamako, باماكو]}
+  - {name: Gao, country: Mali, lat: 16.27, lon: -0.04, aliases: [Gao, غاو]}
+  - {name: Timbuktu, country: Mali, lat: 16.77, lon: -3.01, aliases: [Timbuktu, Tombouctou, تمبكتو]}
+  - {name: Kidal, country: Mali, lat: 18.44, lon: 1.41, aliases: [Kidal, كيدال]}
+  - {name: Mopti, country: Mali, lat: 14.49, lon: -4.2, aliases: [Mopti]}
+  - {name: Menaka, country: Mali, lat: 15.92, lon: 2.4, aliases: [Menaka, ميناكا]}
+  - {name: Segou, country: Mali, lat: 13.43, lon: -6.26, aliases: [Segou]}
+  - {name: Kayes, country: Mali, lat: 14.45, lon: -11.44, aliases: [Kayes]}
+  # Burkina Faso
+  - {name: Ouagadougou, country: Burkina Faso, lat: 12.37, lon: -1.52, aliases: [Ouagadougou, واغادوغو]}
+  - {name: Djibo, country: Burkina Faso, lat: 14.1, lon: -1.63, aliases: [Djibo]}
+  - {name: Dori, country: Burkina Faso, lat: 14.03, lon: -0.03, aliases: [Dori]}
+  - {name: Kaya, country: Burkina Faso, lat: 13.09, lon: -1.08, aliases: [Kaya]}
+  - {name: Fada N'Gourma, country: Burkina Faso, lat: 12.06, lon: 0.36, aliases: ["Fada N'Gourma", "Fada Ngourma"]}
+  - {name: Barsalogho, country: Burkina Faso, lat: 13.42, lon: -1.06, aliases: [Barsalogho]}
+  # Niger
+  - {name: Niamey, country: Niger, lat: 13.51, lon: 2.11, aliases: [Niamey, نيامي]}
+  - {name: Tillaberi, country: Niger, lat: 14.21, lon: 1.45, aliases: [Tillaberi, Tillabery]}
+  - {name: Diffa, country: Niger, lat: 13.32, lon: 12.61, aliases: [Diffa]}
+  - {name: Tahoua, country: Niger, lat: 14.89, lon: 5.27, aliases: [Tahoua]}
+  - {name: Agadez, country: Niger, lat: 16.97, lon: 7.99, aliases: [Agadez]}
+  # Nigeria
+  - {name: Maiduguri, country: Nigeria, lat: 11.85, lon: 13.16, aliases: [Maiduguri, مايدوغوري]}
+  - {name: Borno State, country: Nigeria, lat: 11.88, lon: 13.15, aliases: [Borno]}
+  - {name: Yobe State, country: Nigeria, lat: 12.29, lon: 11.44, aliases: [Yobe]}
+  - {name: Zamfara State, country: Nigeria, lat: 12.17, lon: 6.25, aliases: [Zamfara]}
+  - {name: Katsina, country: Nigeria, lat: 12.99, lon: 7.6, aliases: [Katsina]}
+  - {name: Sokoto, country: Nigeria, lat: 13.06, lon: 5.24, aliases: [Sokoto]}
+  - {name: Kaduna, country: Nigeria, lat: 10.52, lon: 7.44, aliases: [Kaduna]}
+  - {name: Plateau State, country: Nigeria, lat: 9.9, lon: 8.86, aliases: ["Plateau State", Jos]}
+  - {name: Benue State, country: Nigeria, lat: 7.34, lon: 8.74, aliases: [Benue]}
+  - {name: Gwoza, country: Nigeria, lat: 11.08, lon: 13.69, aliases: [Gwoza]}
+  - {name: Monguno, country: Nigeria, lat: 12.67, lon: 13.61, aliases: [Monguno]}
+  - {name: Abuja, country: Nigeria, lat: 9.08, lon: 7.4, aliases: [Abuja, أبوجا]}
+  - {name: Kano, country: Nigeria, lat: 12.0, lon: 8.52, aliases: [Kano]}
+  - {name: Lagos, country: Nigeria, lat: 6.52, lon: 3.38, aliases: [Lagos, لاغوس]}
+  # Chad / Cameroon
+  - {name: N'Djamena, country: Chad, lat: 12.13, lon: 15.06, aliases: ["N'Djamena", Ndjamena, انجامينا]}
+  - {name: Maroua, country: Cameroon, lat: 10.59, lon: 14.32, aliases: [Maroua]}
+  - {name: Kolofata, country: Cameroon, lat: 11.17, lon: 14.01, aliases: [Kolofata]}
+  - {name: Yaounde, country: Cameroon, lat: 3.85, lon: 11.5, aliases: [Yaounde, ياوندي]}
+  # Somalia
+  - {name: Mogadishu, country: Somalia, lat: 2.05, lon: 45.32, aliases: [Mogadishu, Mogadiscio, مقديشو]}
+  - {name: Kismayo, country: Somalia, lat: -0.36, lon: 42.55, aliases: [Kismayo, Kismaayo, كيسمايو]}
+  - {name: Baidoa, country: Somalia, lat: 3.12, lon: 43.65, aliases: [Baidoa, بيدوا]}
+  - {name: Beledweyne, country: Somalia, lat: 4.74, lon: 45.2, aliases: [Beledweyne, Beletweyne]}
+  - {name: Bosaso, country: Somalia, lat: 11.28, lon: 49.18, aliases: [Bosaso, Bossaso]}
+  - {name: Afgoye, country: Somalia, lat: 2.14, lon: 45.12, aliases: [Afgoye, Afgooye]}
+  # Kenya / Ethiopia
+  - {name: Nairobi, country: Kenya, lat: -1.29, lon: 36.82, aliases: [Nairobi, نيروبي]}
+  - {name: Mandera, country: Kenya, lat: 3.94, lon: 41.86, aliases: [Mandera]}
+  - {name: Garissa, country: Kenya, lat: -0.45, lon: 39.65, aliases: [Garissa]}
+  - {name: Lamu, country: Kenya, lat: -2.27, lon: 40.9, aliases: [Lamu]}
+  - {name: Wajir, country: Kenya, lat: 1.75, lon: 40.06, aliases: [Wajir]}
+  - {name: Addis Ababa, country: Ethiopia, lat: 9.03, lon: 38.74, aliases: ["Addis Ababa", "Addis Abeba", "أديس أبابا"]}
+  - {name: Tigray (Mekelle), country: Ethiopia, lat: 13.5, lon: 39.47, aliases: [Mekelle, Tigray]}
+  # Sudan
+  - {name: Khartoum, country: Sudan, lat: 15.5, lon: 32.56, aliases: [Khartoum, الخرطوم]}
+  - {name: El Fasher, country: Sudan, lat: 13.63, lon: 25.35, aliases: ["El Fasher", "El-Fasher", الفاشر]}
+  # Mozambique
+  - {name: Cabo Delgado, country: Mozambique, lat: -12.33, lon: 39.32, aliases: ["Cabo Delgado", "كابو ديلغادو"]}
+  - {name: Palma, country: Mozambique, lat: -10.77, lon: 40.47, aliases: [Palma]}
+  - {name: Mocimboa da Praia, country: Mozambique, lat: -11.35, lon: 40.35, aliases: ["Mocimboa da Praia", Mocimboa]}
+  - {name: Pemba, country: Mozambique, lat: -12.97, lon: 40.52, aliases: [Pemba]}
+  - {name: Macomia, country: Mozambique, lat: -11.95, lon: 40.13, aliases: [Macomia]}
+  - {name: Muidumbe, country: Mozambique, lat: -11.83, lon: 39.85, aliases: [Muidumbe]}
+  - {name: Maputo, country: Mozambique, lat: -25.97, lon: 32.57, aliases: [Maputo, مابوتو]}
+  # DR Congo / Uganda / CAR
+  - {name: Beni, country: DR Congo, lat: 0.49, lon: 29.47, aliases: [Beni]}
+  - {name: Bunia, country: DR Congo, lat: 1.56, lon: 30.25, aliases: [Bunia]}
+  - {name: Butembo, country: DR Congo, lat: 0.14, lon: 29.29, aliases: [Butembo]}
+  - {name: Goma, country: DR Congo, lat: -1.68, lon: 29.22, aliases: [Goma, غوما]}
+  - {name: Ituri, country: DR Congo, lat: 1.6, lon: 29.9, aliases: [Ituri]}
+  - {name: North Kivu, country: DR Congo, lat: -0.8, lon: 29.0, aliases: ["North Kivu", "Nord-Kivu"]}
+  - {name: Kinshasa, country: DR Congo, lat: -4.32, lon: 15.31, aliases: [Kinshasa, كينشاسا]}
+  - {name: Kampala, country: Uganda, lat: 0.35, lon: 32.58, aliases: [Kampala, كمبالا]}
+  - {name: Bangui, country: Central African Republic, lat: 4.36, lon: 18.56, aliases: [Bangui, بانغي]}
+  # North Africa
+  - {name: Tripoli, country: Libya, lat: 32.89, lon: 13.19, aliases: [Tripoli, طرابلس]}
+  - {name: Benghazi, country: Libya, lat: 32.12, lon: 20.07, aliases: [Benghazi, بنغازي]}
+  - {name: Sirte, country: Libya, lat: 31.2, lon: 16.59, aliases: [Sirte, سرت]}
+  - {name: Cairo, country: Egypt, lat: 30.04, lon: 31.24, aliases: [Cairo, "Le Caire", القاهرة]}
+  - {name: North Sinai, country: Egypt, lat: 31.13, lon: 33.8, aliases: [Sinai, "El Arish", العريش, سيناء]}
+  - {name: Algiers, country: Algeria, lat: 36.75, lon: 3.06, aliases: [Algiers, Alger]}
+  - {name: Tunis, country: Tunisia, lat: 36.81, lon: 10.18, aliases: [Tunis]}
+  - {name: Rabat, country: Morocco, lat: 34.02, lon: -6.84, aliases: [Rabat, الرباط]}
+  - {name: Casablanca, country: Morocco, lat: 33.57, lon: -7.59, aliases: [Casablanca, "الدار البيضاء"]}
+  # Coastal West Africa
+  - {name: Northern Benin (Kandi), country: Benin, lat: 11.13, lon: 2.94, aliases: [Kandi, Malanville, Alibori]}
+  - {name: Cotonou, country: Benin, lat: 6.37, lon: 2.39, aliases: [Cotonou]}
+  - {name: Northern Togo (Dapaong), country: Togo, lat: 10.86, lon: 0.21, aliases: [Dapaong]}
+  - {name: Nouakchott, country: Mauritania, lat: 18.08, lon: -15.98, aliases: [Nouakchott, نواكشوط]}

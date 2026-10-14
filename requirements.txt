@@ -1,0 +1,10 @@
+# Python packages this project needs. Install them with:
+#   pip install -r requirements.txt
+# More will be added in later phases (Anthropic SDK, Streamlit, ...).
+
+requests>=2.31       # downloads web pages / feeds
+feedparser>=6.0      # reads RSS and Atom feeds
+PyYAML>=6.0          # reads our config files (config/*.yaml)
+python-dotenv>=1.0   # reads secret settings from the .env file
+tzdata               # time-zone data (Windows doesn't include it)
+pytest>=8.0          # runs the automatic tests in tests/

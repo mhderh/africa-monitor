@@ -1,0 +1,131 @@
+# ---------------------------------------------------------------------------
+# NEWS SOURCES
+# ---------------------------------------------------------------------------
+# This is the ONE place where you add, remove, or switch off sources.
+#
+# For each RSS feed:
+#   name      - short label shown in the terminal, Telegram and the dashboard
+#   url       - the RSS/Atom feed address
+#   language  - "en", "fr" or "ar" (the language of the articles)
+#   enabled   - true = fetch it, false = skip it (handy for testing)
+#
+# Rules: open, reputable sources only. Never add extremist channels or
+# propaganda sites, and respect each site's terms of use. If a site blocks
+# automated access, leave it out rather than trying to get around it.
+#
+# Global feeds (Al Jazeera, BBC Arabic...) are fine: the keyword filter only
+# keeps articles that name an African country or city.
+#
+# Checked working on 2026-10-14. Feeds that blocked us or were empty that day
+# (not included): The Defense Post, HumAngle, Garowe Online, ISS Africa,
+# Sky News Arabia.
+# ---------------------------------------------------------------------------
+
+rss:
+  # ---- English ----
+  - name: BBC News Africa
+    url: https://feeds.bbci.co.uk/news/world/africa/rss.xml
+    language: en
+    enabled: true
+  - name: Al Jazeera English
+    url: https://www.aljazeera.com/xml/rss/all.xml
+    language: en
+    enabled: true
+  - name: UN News Africa
+    url: https://news.un.org/feed/subscribe/en/news/region/africa/feed/rss.xml
+    language: en
+    enabled: true
+  - name: AllAfrica
+    url: https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf
+    language: en
+    enabled: true
+  - name: DW Africa
+    url: https://rss.dw.com/rdf/rss-en-africa
+    language: en
+    enabled: true
+  - name: Premium Times (Nigeria)
+    url: https://www.premiumtimesng.com/feed
+    language: en
+    enabled: true
+  - name: Club of Mozambique
+    url: https://clubofmozambique.com/feed/
+    language: en
+    enabled: true
+  - name: Crisis Group
+    url: https://www.crisisgroup.org/rss
+    language: en
+    enabled: true
+
+  # ---- French ----
+  - name: RFI Afrique
+    url: https://www.rfi.fr/fr/afrique/rss
+    language: fr
+    enabled: true
+  - name: France 24 Afrique
+    url: https://www.france24.com/fr/afrique/rss
+    language: fr
+    enabled: true
+  - name: Le Monde Afrique
+    url: https://www.lemonde.fr/afrique/rss_full.xml
+    language: fr
+    enabled: true
+  - name: Jeune Afrique
+    url: https://www.jeuneafrique.com/feed/
+    language: fr
+    enabled: true
+  - name: BBC Afrique
+    url: https://www.bbc.com/afrique/index.xml
+    language: fr
+    enabled: true
+
+  # ---- Arabic ----
+  - name: BBC Arabic
+    url: https://feeds.bbci.co.uk/arabic/rss.xml
+    language: ar
+    enabled: true
+  - name: France 24 Arabic
+    url: https://www.france24.com/ar/rss
+    language: ar
+    enabled: true
+  - name: Al Jazeera Arabic
+    url: https://www.aljazeera.net/aljazeerarss/a7c186be-1baa-4bd4-9d80-a84db769f779/73d0e1b4-532f-45ef-b135-bfdff8b8cab9
+    language: ar
+    enabled: true
+  - name: DW Arabic
+    url: https://rss.dw.com/rdf/rss-ar-all
+    language: ar
+    enabled: true
+
+# ---------------------------------------------------------------------------
+# GDELT - free worldwide news index (no key needed). One search per run.
+# It sometimes refuses requests when it's busy ("429 Too Many Requests");
+# the pipeline then just skips it for that run.
+#   max_records  how many articles to ask for (max 250)
+#   timespan     how far back to look, e.g. 24h
+# ---------------------------------------------------------------------------
+gdelt:
+  enabled: true
+  max_records: 150
+  timespan: 24h
+  # Search words (any of these) ...
+  keywords: [militants, jihadists, insurgents, gunmen, kidnapped, abducted,
+             "armed men", "suicide bomber", ambush, terrorists,
+             jihadistes, "hommes armes", enleves]
+  # ... in an article that also mentions one of these places.
+  places: [Mali, "Burkina Faso", Niger, Nigeria, Chad, Cameroon, Somalia,
+           Kenya, Mozambique, "Cabo Delgado", Libya, Egypt, Algeria,
+           Tunisia, Morocco, Benin, Togo, Congo, Sudan, Ethiopia]
+
+# ---------------------------------------------------------------------------
+# ReliefWeb (UN OCHA) - humanitarian and security reports.
+# Needs a free "app name": request one at
+#   https://apidoc.reliefweb.int/parameters#appname
+# then put it in .env as RELIEFWEB_APPNAME=... (and later in GitHub Secrets).
+# Without it, ReliefWeb is skipped automatically.
+# ---------------------------------------------------------------------------
+reliefweb:
+  enabled: true
+  max_records: 100
+  # Countries to ask for (ISO3 codes)
+  countries: [MLI, BFA, NER, MRT, NGA, TCD, CMR, SOM, KEN, ETH, SDN, SSD,
+              MOZ, TZA, LBY, EGY, DZA, TUN, MAR, COD, CAF, BEN, TGO]
