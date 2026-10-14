@@ -106,6 +106,84 @@ python -m pytest                     # run the automatic tests
    python -m monitor.telegram --test
    ```
 
+## Running it every day on GitHub (GitHub Actions)
+
+GitHub runs the monitor on its own computers every day at **07:00 UTC =
+08:00 Casablanca** (07:00 Casablanca during Ramadan, when Morocco moves to
+UTC+0), so it works when your computer is off. The instructions are in
+`.github/workflows/daily.yml`. A private repository gets 2,000 free minutes
+a month; one run takes about 1-2 minutes.
+
+### 1. Create the repository on GitHub (once)
+1. Sign in at https://github.com (create a free account if needed).
+2. Click **+** (top right) -> **New repository**.
+3. Name it, e.g. `africa-monitor`, choose **Private**, and do **not** tick
+   "Add a README" (the project already has one). Click **Create repository**.
+
+### 2. Upload the project (once)
+In PowerShell, in the project folder (replace `YOUR-USERNAME`):
+
+```powershell
+git remote add origin https://github.com/YOUR-USERNAME/africa-monitor.git
+git push -u origin main
+```
+
+The first push opens a browser window asking you to sign in to GitHub -
+that's Git Credential Manager, part of Git for Windows. Refresh the GitHub
+page afterwards: your files are there. `.env` is **not** uploaded
+(it's listed in `.gitignore`).
+
+### 3. Add your secrets to GitHub (once)
+Repository -> **Settings** -> **Secrets and variables** -> **Actions** ->
+**New repository secret**. Add each one (name exactly as written, value
+copied from your `.env`):
+
+| Name | Value |
+|---|---|
+| `TELEGRAM_BOT_TOKEN` | your bot token |
+| `TELEGRAM_CHAT_ID` | your chat ID |
+| `RELIEFWEB_APPNAME` | *(optional)* your ReliefWeb app name |
+
+Do **not** add `MONITOR_DB` - GitHub must use the official database.
+Secrets are encrypted; GitHub hides them as `***` in logs.
+
+### 4. Run it by hand to check it works
+1. Repository -> **Actions** tab. If asked, click
+   **"I understand my workflows, go ahead and enable them"**.
+2. Click **Daily monitor** (left) -> **Run workflow** (right).
+3. First tick **Dry run** -> **Run workflow**. Nothing is sent; the
+   messages appear in the log.
+4. Then run it again **without** Dry run - you should get the digest on
+   Telegram.
+
+### 5. Check that the scheduled runs worked
+- **Actions** tab: each run has a green ✓ (worked) or red ✗ (failed).
+  Click a run, then **run-monitor**, then a step to read its log.
+- After each real run, the repository shows a new commit
+  **"Update database YYYY-MM-DD"** made by `github-actions[bot]`.
+- If a run fails, you get a ⚠️ Telegram message with a link to the log,
+  and GitHub also emails you.
+- The first automatic run happens at the next 07:00 UTC. GitHub can start
+  scheduled runs 5-30 minutes late at busy times - that's normal.
+- GitHub pauses schedules in repositories with no activity for 60 days; the
+  daily database commit counts as activity, so this shouldn't happen.
+
+### Working on your computer after this
+- The **official database** (`data/monitor.db`) now lives on GitHub and is
+  updated every day. Add this line to your `.env`, so your local test runs
+  use a separate copy (`data/local.db`) and never clash with it:
+  ```
+  MONITOR_DB=data/local.db
+  ```
+- **Before changing anything**, get the latest version from GitHub:
+  `git pull`
+- After changing code or config, upload it:
+  ```powershell
+  git add -A
+  git commit -m "Describe what you changed"
+  git push
+  ```
+
 ## Telegram: alerts and the daily digest
 **Alerts** - every new event with severity 4 or 5 gets its own short message
 (place, headline, casualties, group, why it scored high, source link), sent
