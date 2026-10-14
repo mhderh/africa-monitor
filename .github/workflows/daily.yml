@@ -23,6 +23,10 @@ on:
         description: "Dry run (print the messages in the log, send nothing)"
         type: boolean
         default: false
+      resend:
+        description: "Resend only: post the last digest again (e.g. to a new channel), fetch nothing"
+        type: boolean
+        default: false
 
 # Allows the job to save the updated database back into the repository.
 permissions:
@@ -60,7 +64,13 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           RELIEFWEB_APPNAME: ${{ secrets.RELIEFWEB_APPNAME }}
         run: |
-          if [ "${{ inputs.dry_run }}" = "true" ]; then
+          if [ "${{ inputs.resend }}" = "true" ]; then
+            if [ "${{ inputs.dry_run }}" = "true" ]; then
+              python -m monitor.main --resend --dry-run
+            else
+              python -m monitor.main --resend
+            fi
+          elif [ "${{ inputs.dry_run }}" = "true" ]; then
             python -m monitor.main --dry-run
           else
             python -m monitor.main

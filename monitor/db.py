@@ -197,10 +197,14 @@ EVENTS_WITH_TITLE = """
 """
 
 
-def get_digest_events(connection, since_date):
-    """Events not yet sent in a digest, dated on/after since_date (YYYY-MM-DD)."""
+def get_digest_events(connection, since_date, include_sent=False):
+    """
+    Events dated on/after since_date (YYYY-MM-DD) that haven't been in a
+    digest yet - or all of them if include_sent is True (used by --resend).
+    """
+    only_unsent = "" if include_sent else " AND events.in_digest = 0"
     rows = connection.execute(
-        EVENTS_WITH_TITLE + " AND events.in_digest = 0"
+        EVENTS_WITH_TITLE + only_unsent +
         " ORDER BY events.severity DESC, events.event_date DESC",
         {"since": since_date})
     return [dict(row) for row in rows]

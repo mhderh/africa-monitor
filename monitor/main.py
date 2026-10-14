@@ -6,6 +6,8 @@ Entry point of the pipeline. Run it from the project folder with:
     python -m monitor.main --reprocess   # re-check all stored articles (after editing keywords)
     python -m monitor.main --dry-run     # print the Telegram digest instead of sending it
     python -m monitor.main --no-telegram # skip Telegram completely
+    python -m monitor.main --resend      # only re-send the last digest (e.g. to a new
+                                         # channel); fetches nothing, changes nothing
 
 What it does:
   1. fetch all enabled sources in config/sources.yaml (RSS, GDELT, ReliefWeb)
@@ -125,6 +127,26 @@ def send_digest(connection, dry_run):
     print(f"\nDigest sent to Telegram ({len(events)} events).")
 
 
+def resend_digest(connection, dry_run):
+    """
+    Send again the digest of the last days (digest.max_age_days), including
+    events that were already sent - useful after moving to a new Telegram
+    channel. Nothing is fetched and the database is not changed.
+    """
+    events = db.get_digest_events(connection, digest.cutoff_date(), include_sent=True)
+    text = digest.build_digest(events)
+    if dry_run:
+        print("\n----- Digest preview (resend, not sent) -----")
+        print(text)
+        return
+    try:
+        telegram.send_message(text)
+    except telegram.TelegramError as error:
+        print(f"\n! Digest NOT re-sent: {error}")
+        sys.exit(1)
+    print(f"\nDigest re-sent to Telegram ({len(events)} events).")
+
+
 def main():
     # Make sure French accents and Arabic text print correctly on Windows.
     sys.stdout.reconfigure(encoding="utf-8")
@@ -138,9 +160,17 @@ def main():
                         help="print the Telegram alerts and digest instead of sending them")
     parser.add_argument("--no-telegram", action="store_true",
                         help="don't send any Telegram messages")
+    parser.add_argument("--resend", action="store_true",
+                        help="only re-send the digest of the last days, including events "
+                             "already sent; fetches nothing and changes nothing")
     args = parser.parse_args()
 
     connection = db.connect()
+
+    if args.resend:
+        resend_digest(connection, args.dry_run)
+        connection.close()
+        return
 
     # Steps 1-2: fetch and save. Only articles we have never seen come back.
     articles = fetch_all()
