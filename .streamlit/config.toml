@@ -1,0 +1,9 @@
+# Dashboard look. The chart colours were chosen and checked for this light
+# theme, so it is fixed here.
+[theme]
+base = "light"
+backgroundColor = "#f9f9f7"
+secondaryBackgroundColor = "#fcfcfb"
+textColor = "#0b0b0b"
+primaryColor = "#2a78d6"
+font = "sans serif"

@@ -8,7 +8,8 @@ digest, and feeds a dashboard.
 Classification is **rule-based and free** (no API key needed). Claude can be
 switched on later for better summaries and accuracy.
 
-> Work in progress - built in phases. This README grows with each phase.
+**Parts:** a Python pipeline (fetch -> filter -> classify -> deduplicate ->
+Telegram), run daily by GitHub Actions, and a Streamlit web dashboard.
 
 ## Project layout
 
@@ -33,6 +34,10 @@ monitor/places.py            <- finds the country/city an article is about
 monitor/matching.py          <- text-matching helpers (accents, Arabic, ...)
 monitor/config.py            <- reads the YAML files
 tests/                       <- automatic tests (python -m pytest)
+dashboard/app.py             <- the web dashboard (Streamlit)
+dashboard/requirements.txt   <- packages for the dashboard
+.streamlit/config.toml       <- dashboard colours/theme
+.github/workflows/daily.yml  <- the daily GitHub Actions schedule
 data/monitor.db              <- the database file (created on first run)
 requirements.txt             <- Python packages needed
 .env.example                 <- template for secret keys (copy to .env)
@@ -183,6 +188,47 @@ Secrets are encrypted; GitHub hides them as `***` in logs.
   git commit -m "Describe what you changed"
   git push
   ```
+
+## The dashboard
+
+A web page to browse the events: a **map** (dot colour and size = severity),
+**filters** (period, region, minimum severity, headline search, and under
+"More filters": country, event type, group), headline numbers, a **weekly
+trend chart** by region, the **busiest countries**, and a **searchable table**
+with links to every source and a CSV download.
+
+It only *reads* the official database `data/monitor.db` - it never changes it.
+
+### Run it on your computer
+```powershell
+git pull                                  # get the latest data from GitHub
+pip install -r dashboard/requirements.txt # once
+streamlit run dashboard/app.py
+```
+It opens in your browser at http://localhost:8501. Press `Ctrl+C` in
+PowerShell to stop it. Tips: drag the map to move it, use the + / - buttons
+(or double-click) to zoom, and hover over a dot, bar or row for details.
+
+### Put it online for free (Streamlit Community Cloud)
+1. Go to https://share.streamlit.io and **sign in with GitHub**. When asked,
+   allow Streamlit to see your **private** repositories.
+2. Click **Create app** -> **Deploy a public app from GitHub** (the name is
+   misleading - an app from a private repository stays private; see step 4).
+3. Fill in:
+   - Repository: `mhderh/africa-monitor`
+   - Branch: `main`
+   - Main file path: `dashboard/app.py`
+   - App URL: pick a name you like
+   - *Advanced settings* -> Python version **3.12**
+   Click **Deploy**. The first start takes 2-3 minutes.
+4. **Keep it private:** in the app, click **Share** (top right). Make sure it
+   is *not* set to public, and invite the email addresses of the people
+   allowed to view it (they sign in to see it). No secrets are needed - the
+   dashboard only reads the database file.
+5. **Updates are automatic:** every daily "Update database" commit from
+   GitHub Actions makes Streamlit reload the app with the new data.
+   If nobody opens the app for a while, Streamlit puts it to sleep; the next
+   visitor clicks "wake up" and waits about 30 seconds.
 
 ## Telegram: alerts and the daily digest
 **Alerts** - every new event with severity 4 or 5 gets its own short message

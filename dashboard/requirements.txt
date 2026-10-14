@@ -1,0 +1,3 @@
+# Packages for the dashboard only (Streamlit Community Cloud reads this file).
+# Streamlit also installs pandas, altair (charts) and pydeck (map).
+streamlit>=1.40,<2
