@@ -25,3 +25,9 @@ deduplication:
   # ... and either name the same city, report the same death toll, or have
   # headlines at least this similar (0 = nothing in common, 1 = identical).
   title_similarity: 0.5
+
+dashboard:
+  # Your public Telegram channel, e.g. "veille_afrique" (with or without the
+  # @, or the full https://t.me/... link). When filled in, the dashboard shows
+  # a "Join the Telegram channel" button. Leave empty ("") to hide it.
+  telegram_channel: ""

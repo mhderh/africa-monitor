@@ -1,3 +1,4 @@
 # Packages for the dashboard only (Streamlit Community Cloud reads this file).
 # Streamlit also installs pandas, altair (charts) and pydeck (map).
 streamlit>=1.40,<2
+PyYAML>=6.0          # reads config/options.yaml (Telegram channel link)

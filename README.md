@@ -257,6 +257,32 @@ Severity icons: 🔴 5 · 🟠 4 · 🟡 3 · 🔵 2 · ⚪ 1.
 
 All of these numbers can be changed in `config/options.yaml`.
 
+### Sharing the digest in a Telegram channel
+So that other people can receive the digest and alerts, post them to a
+channel instead of your private chat - no code change needed:
+
+1. **Create the channel:** in Telegram, *New Channel* -> give it a name and
+   description -> choose **Public** and pick its link, e.g.
+   `t.me/veille_afrique` (the part after `t.me/` is the channel username).
+2. **Make your bot an admin:** open the channel -> *Administrators* ->
+   *Add Admin* -> search your bot's username -> keep **Post messages**
+   allowed -> save.
+3. **Point the pipeline at the channel:** set `TELEGRAM_CHAT_ID=@veille_afrique`
+   (your channel username, with the @) in `.env`, and change the
+   `TELEGRAM_CHAT_ID` secret on GitHub to the same value.
+4. **Test it:** `python -m monitor.telegram --test` - the test message
+   appears in the channel.
+5. **Show the Join button on the dashboard:** in `config/options.yaml`, set
+   `telegram_channel: "veille_afrique"`, then commit and push. The dashboard
+   shows a **Join the Telegram channel** button in the top bar and side panel.
+
+Once the chat ID points to the channel, you receive the messages there too
+(as its owner) rather than in your private chat with the bot. That includes
+the "run failed" notice, which channel members will also see.
+For a **private** channel: use its invite link (`https://t.me/+...`) as
+`telegram_channel`, and get its numeric ID (`-100...`) by posting anything
+in the channel and running `python -m monitor.telegram --get-chat-id`.
+
 Events are marked as sent only after Telegram confirms delivery, so nothing
 is sent twice and nothing is lost if Telegram is down. If there's nothing
 new, you still get a short "no new events" message - so you know the system

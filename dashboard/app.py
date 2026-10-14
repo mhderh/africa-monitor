@@ -20,8 +20,28 @@ import altair as alt
 import pandas as pd
 import pydeck as pdk
 import streamlit as st
+import yaml
 
 DB_FILE = Path(__file__).resolve().parent.parent / "data" / "monitor.db"
+OPTIONS_FILE = Path(__file__).resolve().parent.parent / "config" / "options.yaml"
+
+
+def telegram_link():
+    """
+    Link to the public Telegram channel set in config/options.yaml
+    (dashboard.telegram_channel), or None if it isn't filled in.
+    Accepts "veille_afrique", "@veille_afrique" or "https://t.me/veille_afrique".
+    """
+    try:
+        options = yaml.safe_load(OPTIONS_FILE.read_text(encoding="utf-8")) or {}
+    except (OSError, yaml.YAMLError):
+        return None
+    channel = str((options.get("dashboard") or {}).get("telegram_channel") or "").strip()
+    if not channel:
+        return None
+    if channel.startswith(("https://", "http://")):
+        return channel
+    return "https://t.me/" + channel.lstrip("@").removeprefix("t.me/")
 
 # ---------------------------------------------------------------------------
 # Colours (all chosen for the dark background)
@@ -93,6 +113,11 @@ div[data-testid="stVerticalBlockBorderWrapper"] {{ background: {PANEL}; border-c
 .tag {{ font-family:'JetBrains Mono', monospace; font-size:.68rem; letter-spacing:.12em; color:{INK_2};
     border:1px solid {LINE}; padding:3px 8px; border-radius:6px; }}
 .status {{ font-family:'JetBrains Mono', monospace; font-size:.75rem; color:{INK_2}; letter-spacing:.06em; }}
+.topbar .right {{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }}
+.join {{ background:#1878b0; color:#ffffff !important; text-decoration:none !important; font-weight:600;
+    font-size:.82rem; padding:8px 14px; border-radius:8px; white-space:nowrap;
+    border:1px solid #2a93cf; }}
+.join:hover {{ background:#1d8bcc; }}
 .pulse {{ display:inline-block; width:8px; height:8px; border-radius:50%; background:#0ca30c;
     margin-right:8px; box-shadow:0 0 0 0 rgba(12,163,12,.6); animation:pulse 2s infinite; }}
 @keyframes pulse {{ 0% {{ box-shadow:0 0 0 0 rgba(12,163,12,.55); }}
@@ -244,12 +269,21 @@ def filters(events):
 # ---------------------------------------------------------------------------
 def top_bar(events):
     last = pd.to_datetime(events["created_at"]).max()
+    link = telegram_link()
+    join = (f'<a class="join" href="{escape(link, quote=True)}" target="_blank" '
+            f'rel="noopener">✈ Join the Telegram channel</a>' if link else "")
     st.markdown(f"""
 <div class="topbar">
   <div class="brand"><div class="mark">◆</div>AFRICA SECURITY MONITOR
     <span class="tag">OSINT · OPEN SOURCES</span></div>
-  <div class="status"><span class="pulse"></span>FEED ACTIVE · LAST UPDATE {last:%d %b %Y %H:%M} UTC</div>
+  <div class="right">
+    <div class="status"><span class="pulse"></span>FEED ACTIVE · LAST UPDATE {last:%d %b %Y %H:%M} UTC</div>
+    {join}
+  </div>
 </div>""", unsafe_allow_html=True)
+    if link:
+        st.sidebar.link_button("✈  Join the Telegram channel", link, use_container_width=True)
+        st.sidebar.caption("Daily digest and alerts, every morning at 08:00.")
 
 
 def change(now, before):
