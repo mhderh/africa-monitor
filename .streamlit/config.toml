@@ -1,9 +1,12 @@
-# Dashboard look. The chart colours were chosen and checked for this light
-# theme, so it is fixed here.
+# Dashboard look: a dark "intelligence platform" theme. The chart colours in
+# dashboard/app.py were chosen for this dark background.
 [theme]
-base = "light"
-backgroundColor = "#f9f9f7"
-secondaryBackgroundColor = "#fcfcfb"
-textColor = "#0b0b0b"
-primaryColor = "#2a78d6"
+base = "dark"
+backgroundColor = "#0b1220"
+secondaryBackgroundColor = "#111a2b"
+textColor = "#e6edf3"
+primaryColor = "#3987e5"
 font = "sans serif"
+
+[client]
+toolbarMode = "minimal"

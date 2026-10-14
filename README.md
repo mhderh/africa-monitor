@@ -191,11 +191,22 @@ Secrets are encrypted; GitHub hides them as `***` in logs.
 
 ## The dashboard
 
-A web page to browse the events: a **map** (dot colour and size = severity),
-**filters** (period, region, minimum severity, headline search, and under
-"More filters": country, event type, group), headline numbers, a **weekly
-trend chart** by region, the **busiest countries**, and a **searchable table**
-with links to every source and a CSV download.
+A dark, "intelligence platform" style web page to browse the events:
+
+- **Filter rail** (left): time window, region, country, event type, group,
+  minimum severity and a headline search.
+- **Indicator tiles**: events, high/critical events, reported killed and
+  kidnapped, countries affected - each compared with the previous period.
+- **Operational map**: *Events* mode shows each report (colour and size =
+  severity: 1 Low, 2 Guarded, 3 Elevated, 4 High, 5 Critical); *Heat* mode
+  shows where activity concentrates.
+- **Flash reports**: the most recent serious events, with links to sources.
+- **Activity timeline** by region, **most affected regions**, **event types**
+  and **most active groups**.
+- **Event log**: searchable table with links to every source and a CSV export.
+
+Colours and the dark theme are set in `.streamlit/config.toml` and at the top
+of `dashboard/app.py`.
 
 It only *reads* the official database `data/monitor.db` - it never changes it.
 
