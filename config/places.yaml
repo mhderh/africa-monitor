@@ -116,7 +116,10 @@ countries:
     region: North Africa
     lat: 31.79
     lon: -7.09
-    aliases: [Morocc*, Maroc*, المغرب]
+    # The Sahara territory is counted as part of Morocco, as on Moroccan
+    # official maps (the dashboard map draws it the same way).
+    aliases: [Morocc*, Maroc*, المغرب, "Western Sahara", "Moroccan Sahara",
+              "Sahara occidental", "Sahara marocain", "الصحراء الغربية", "الصحراء المغربية"]
   Algeria:
     region: North Africa
     lat: 28.03
@@ -319,6 +322,11 @@ cities:
   - {name: Tunis, country: Tunisia, lat: 36.81, lon: 10.18, aliases: [Tunis]}
   - {name: Rabat, country: Morocco, lat: 34.02, lon: -6.84, aliases: [Rabat, الرباط]}
   - {name: Casablanca, country: Morocco, lat: 33.57, lon: -7.59, aliases: [Casablanca, "الدار البيضاء"]}
+  - {name: Laayoune, country: Morocco, lat: 27.15, lon: -13.2, aliases: [Laayoune, "El Aaiun", "El Ayoun"]}
+  - {name: Smara, country: Morocco, lat: 26.74, lon: -11.67, aliases: [Smara, Es-Semara, السمارة]}
+  - {name: Dakhla, country: Morocco, lat: 23.72, lon: -15.94, aliases: [Dakhla, الداخلة]}
+  - {name: Boujdour, country: Morocco, lat: 26.13, lon: -14.48, aliases: [Boujdour, بوجدور]}
+  - {name: Guerguerat, country: Morocco, lat: 21.37, lon: -16.95, aliases: [Guerguerat, الكركرات]}
   # Coastal West Africa
   - {name: Northern Benin (Kandi), country: Benin, lat: 11.13, lon: 2.94, aliases: [Kandi, Malanville, Alibori]}
   - {name: Cotonou, country: Benin, lat: 6.37, lon: 2.39, aliases: [Cotonou]}

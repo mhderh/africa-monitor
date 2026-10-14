@@ -112,6 +112,14 @@ def test_year_is_not_a_death_toll():
     assert event["killed"] is None
 
 
+def test_sahara_places_belong_to_morocco():
+    event = classify("Rocket attack on Smara leaves one dead")
+    assert event["country"] == "Morocco"
+    assert event["city"] == "Smara"
+    event = classify("Explosions et deux morts près de Dakhla, au Sahara occidental")
+    assert event["country"] == "Morocco"
+
+
 def test_numbers_are_not_linked_across_other_numbers():
     event = classify("Nigeria: Police arrest 182 suspects, rescue 31 kidnapped victims")
     assert event["kidnapped"] is None          # 182 are suspects; 31 were rescued
